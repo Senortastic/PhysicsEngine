@@ -12,4 +12,5 @@ public:
 	void Update();
 	void DebugScene();
 	void AddGizmos();
+	void UpdateGizmos();
 };

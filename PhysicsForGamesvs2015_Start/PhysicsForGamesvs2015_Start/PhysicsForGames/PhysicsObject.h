@@ -17,8 +17,8 @@ class PhysicsObject
 {
 public:
 	ShapeType _shapeID;
-	void virtual Update(vec3 gravity, float timeStep) = 0;
-	void virtual Debug() = 0;
-	void virtual MakeGizmos() = 0;
-	void virtual ResetPosition() {};
+	virtual void Update(vec3 gravity, float timeStep) = 0;
+	virtual void Debug() = 0;
+	virtual void MakeGizmos() = 0;
+	virtual void ResetPosition() {};
 };
