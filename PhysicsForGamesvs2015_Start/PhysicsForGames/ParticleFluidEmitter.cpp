@@ -4,7 +4,6 @@
 
 #include "Gizmos.h"
 
-
 //constructor
 ParticleFluidEmitter::ParticleFluidEmitter(int _maxParticles, PxVec3 _position,PxParticleFluid* _pf,float _releaseDelay)
 {
@@ -21,10 +20,6 @@ ParticleFluidEmitter::ParticleFluidEmitter(int _maxParticles, PxVec3 _position,P
 	for(int index=0;index<m_maxParticles;index++)
 	{
 		m_activeParticles[index].active = false;
-	}
-
-	if (true) {
-		false;
 	}
 }
 

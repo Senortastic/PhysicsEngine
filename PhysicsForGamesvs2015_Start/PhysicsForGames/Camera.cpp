@@ -115,6 +115,8 @@ void FlyCamera::update(float dt)
 	{
 		double x_delta, y_delta;
 
+
+
 		glfwGetCursorPos(curr_window, &x_delta, &y_delta);
 
 		glfwSetCursorPos(curr_window, 1280.f / 2.f, 720.f / 2.f);

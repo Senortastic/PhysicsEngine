@@ -7,8 +7,27 @@
 #include "glm/ext.hpp"
 #include "glm/gtc/quaternion.hpp"
 
+#include "PxPhysicsAPI.h"
+#include "PxScene.h"
+#include "physx\pvd\PxVisualDebugger.h"
+
 #define Assert(val) if (val){}else{ *((char*)0) = 0;}
 #define ArrayCount(val) (sizeof(val)/sizeof(val[0]))
+
+class myAllocator : public PxAllocatorCallback
+{
+public:
+	virtual ~myAllocator() {}
+	virtual void* allocate(size_t size, const char* typeName, const char* filename, int line)
+	{
+		void* pointer = _aligned_malloc(size, 16);
+		return pointer;
+	}
+	virtual void deallocate(void* ptr)
+	{
+		_aligned_free(ptr);
+	}
+};
 
 bool Physics::startup()
 {
@@ -32,6 +51,10 @@ bool Physics::startup()
 
 void Physics::shutdown()
 {
+	g_PhysicsScene->release();
+	g_Physics->release();
+	g_PhysicsFoundation->release();
+
 	delete m_renderer;
     Gizmos::destroy();
     Application::shutdown();
@@ -79,6 +102,68 @@ void Physics::draw()
     glfwPollEvents();
 }
 
+void Physics::SetupVisualDebugger()
+{
+	//check if PvdConnection manager is available on this platform
+	if (g_Physics->getPvdConnectionManager() == NULL)
+		return;
+	//setup connection parameters
+	const char* pvd_host_ip = "127.0.0.1";
+	//TCP port to connect to, where PVD is listening
+	int port = 5425;
+	//timeout in milliseconds to wait for PVD to respond
+	//consoles and remote PCs need a higher timeout
+	unsigned int timeout = 100;
+	PxVisualDebuggerConnectionFlags connectionFlags = PxVisualDebuggerExt::getAllConnectionFlags();
+	//try to connect to PxVisualDebuggerExt
+	auto theConnection = PxVisualDebuggerExt::createConnection(g_Physics->getPvdConnectionManager(), pvd_host_ip, port, timeout, connectionFlags);
+}
+
+void Physics::SetupPhysX()
+{
+	PxAllocatorCallback *myCallback = new myAllocator();
+	g_PhysicsFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, *myCallback, gDefaultErrorCallback);
+	g_Physics = PxCreatePhysics(PX_PHYSICS_VERSION, *g_PhysicsFoundation, PxTolerancesScale());
+	PxInitExtensions(*g_Physics);
+
+	//create physics material
+	g_PhysicsMaterial = g_Physics->createMaterial(0.5f, 0.5f, 0.5f);
+	PxSceneDesc sceneDesc(g_Physics->getTolerancesScale());
+	sceneDesc.gravity = PxVec3(0, -10.0f, 0);
+	sceneDesc.filterShader = &physx::PxDefaultSimulationFilterShader;
+	g_PhysicsScene = g_Physics->createScene(sceneDesc);
+}
+
+void Physics::SetupTutorial()
+{
+	//add a plane
+	PxTransform pose = PxTransform(PxVec3(0.0f, 0, 0.0f), PxQuat(PxHalfPi*1.0f));
+	PxRigidStatic* plane = PxCreateStatic(*g_Physics, pose, PxPlaneGeometry(), *g_PhysicsMaterial);
+
+	//add a box
+	float density = 10;
+	PxBoxGeometry box(2, 2, 2);
+	PxTransform transform(PxVec3(0, 5, 0));
+	PxRigidDynamic* dynamicActor = PxCreateDynamic(*g_Physics, transform, box, *g_PhysicsMaterial, density);
+
+	//add actors to the PhysX scene
+	g_PhysicsScene->addActor(*plane);
+	g_PhysicsScene->addActor(*dynamicActor);
+}
+
+void Physics::UpdatePhysX(float deltaTime)
+{
+	if (deltaTime <= 0)
+		return
+
+		g_PhysicsScene->simulate(deltaTime);
+
+	while (g_PhysicsScene->fetchResults() == false)
+	{
+		//will do a thing
+	}
+}
+
 void AddWidget(PxShape* shape, PxRigidActor* actor, vec4 geo_color)
 {
     PxTransform full_transform = PxShapeExt::getGlobalPose(*shape, *actor);
@@ -116,10 +201,10 @@ void AddWidget(PxShape* shape, PxRigidActor* actor, vec4 geo_color)
     } break;
     case (PxGeometryType::ePLANE) :
     {
-
     } break;
     }
 }
+
 
 void Physics::renderGizmos(PxScene* physics_scene)
 {
