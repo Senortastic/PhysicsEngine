@@ -1,7 +1,21 @@
 #pragma once
+#include "../glm/glm.hpp"
+
+using namespace glm;
 
 class RigidBody
 {
 public:
-	RigidBody();
+	RigidBody(float mass, vec3 initialVelocity) : mass(mass), velocity(initialVelocity){}
+	float GetMass() { return mass; }
+	vec3 GetVelocity() { return velocity; }
+	vec3 GetMomentum() { return GetMass() * GetVelocity(); }
+	void Stop() { velocity = vec3(0); }
+	void AddVelocity(vec3 velocity) { velocity += velocity; }
+	void AddMomentum(vec3 momentum) { AddVelocity(momentum / mass); }
+	void AddForce(vec3 force) { force += force; }
+private:
+	float mass;
+	vec3 velocity;
+	vec3 force;
 };
