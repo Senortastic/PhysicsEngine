@@ -25,6 +25,7 @@ private:
 class AABB : public Shape
 {
 public:
+	//TODO: overload for constructor and store colour
 	AABB(vec3 size) : Shape(ShapeType::AABB), m_size(size) {}
 	vec3 GetSize() const { return m_size; }
 	void Draw(vec3 position) const override
