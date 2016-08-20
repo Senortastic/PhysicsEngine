@@ -156,6 +156,7 @@
     <ClInclude Include="ParticleFluidEmitter.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Render.h" />
+    <ClInclude Include="source\Shapes.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="tiny_obj_loader.h" />
   </ItemGroup>
