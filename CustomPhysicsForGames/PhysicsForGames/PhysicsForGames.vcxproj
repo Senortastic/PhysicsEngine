@@ -156,6 +156,10 @@
     <ClInclude Include="ParticleFluidEmitter.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Render.h" />
+    <ClInclude Include="source\Collision.h" />
+    <ClInclude Include="source\PhysicsObject.h" />
+    <ClInclude Include="source\PhysicsScene.h" />
+    <ClInclude Include="source\RigidBody.h" />
     <ClInclude Include="source\Shapes.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="tiny_obj_loader.h" />
@@ -170,6 +174,9 @@
     <ClCompile Include="ParticleFluidEmitter.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="source\Collision.cpp" />
+    <ClCompile Include="source\PhysicsScene.cpp" />
+    <ClCompile Include="source\RigidBody.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
