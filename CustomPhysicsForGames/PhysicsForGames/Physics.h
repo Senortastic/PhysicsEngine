@@ -18,9 +18,9 @@ public:
     virtual void shutdown();
     virtual bool update();
     virtual void draw();
-	//void MakeRope(int length);
+	void MakeRope(int length);
 	void DrawGrid();
-	void UpdateDT();
+	void SetupScene();
 
 	float deltaTime;
 	float currentTime;

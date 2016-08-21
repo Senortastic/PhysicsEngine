@@ -1,9 +1,8 @@
 #include "Physics.h"
-
+#include "source\PhysicsObject.h"
 #include "gl_core_4_4.h"
 #include "GLFW/glfw3.h"
 #include "Gizmos.h"
-
 #include "glm/ext.hpp"
 #include "glm/gtc/quaternion.hpp"
 
@@ -29,22 +28,7 @@ bool Physics::startup()
 
 	m_renderer = new Renderer();
 	physicsScene = std::make_unique<PhysicsScene>(vec3(70, 0, 0));
-
-	physicsScene->SetGravity(glm::vec3(0.0, -9.8, 0.0f));
-	physicsScene->AddPlaneStatic(vec3(0, 1, 0), -10);
-
-	physicsScene->AddAABBStatic(vec3(5, -5, 5), vec3(1, 5, 1));
-	physicsScene->AddAABBStatic(vec3(-5, -5, 5), vec3(1, 5, 1));
-	physicsScene->AddAABBStatic(vec3(-5, -5, -5), vec3(1, 5, 1));
-	physicsScene->AddAABBStatic(vec3(5, -5, -5), vec3(1, 5, 1));
-
-	physicsScene->AddAABBStatic(vec3(0, -1, 0), vec3(6, 1, 6));
-
-	physicsScene->AddAABBDynamic(vec3(0, 2, 0), vec3(1, 1, 1), 5, vec3(0));
-	physicsScene->AddAABBDynamic(vec3(0, 2, 3), vec3(1, 1, 1), 5, vec3(0));
-	physicsScene->AddAABBDynamic(vec3(2, 2, -1), vec3(1, 1, 1), 5, vec3(0));
-
-	//MakeRope(5);
+	SetupScene();
 	return true;
 }
 
@@ -63,38 +47,35 @@ bool Physics::update()
 	}
 
 	Gizmos::clear();
-	DrawGrid();
 
 	float dt = (float)glfwGetTime();
 	m_delta_time = dt;
 	glfwSetTime(0.0);
 
-	//vec4 white(1);
-	//vec4 black(0, 0, 0, 1);
+	vec4 white(1);
+	vec4 black(0, 0, 0, 1);
 
-	//for (int i = 0; i <= 20; ++i) {
-	//    Gizmos::addLine(vec3(-10 + i, -0.01, -10), vec3(-10 + i, -0.01, 10),
-	//                    i == 10 ? white : black);
-	//    Gizmos::addLine(vec3(-10, -0.01, -10 + i), vec3(10, -0.01, -10 + i),
-	//                    i == 10 ? white : black);
-	//}
+	for (int i = 0; i <= 20; ++i) {
+	    Gizmos::addLine(vec3(-10 + i, -0.01, -10), vec3(-10 + i, -0.01, 10),
+	                    i == 10 ? white : black);
+	    Gizmos::addLine(vec3(-10, -0.01, -10 + i), vec3(10, -0.01, -10 + i),
+	                    i == 10 ? white : black);
+	}
 
 	static bool bPressed = false;
-	if (!bPressed && glfwGetKey(m_window, GLFW_KEY_SPACE) == GLFW_PRESS)
+	if (!bPressed && glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
 	{
 		physicsScene->AddSphereDynamic(vec3(m_camera.world[3]), 1.0f, 1.0f, vec3(m_camera.world[2]) * -25.0f);
 		bPressed = true;
 	}
-	else if (glfwGetKey(m_window, GLFW_KEY_SPACE) != GLFW_PRESS)
+	else if (glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_1) != GLFW_PRESS)
 	{
 		bPressed = false;
 	}
 
 	GLFWwindow* curr_window = glfwGetCurrentContext();
-	UpdateDT();
-	m_camera.update(1.0f / 60.0f);
-	physicsScene->Update(deltaTime);
-	Gizmos::addAABBFilled(vec3(0, 1, 0), vec3(100.f, 0.01f, 100.f), vec4(0.0f, 0.5f, 0.5f, 1));
+	m_camera.update(m_delta_time);
+	physicsScene->Update(m_delta_time);
 	return true;
 }
 
@@ -111,29 +92,35 @@ void Physics::draw()
 	glfwPollEvents();
 }
 
+void Physics::SetupScene()
+{
+	physicsScene->SetGravity(glm::vec3(0.0, -9.8, 0.0f));
+	physicsScene->AddPlaneStatic(vec3(0, 1, 0), -10);
+
+	physicsScene->AddAABBStatic(vec3(5, -5, 5), vec3(1, 2, 1));
+	physicsScene->AddAABBStatic(vec3(-5, -5, 5), vec3(1, 2, 1));
+	physicsScene->AddAABBStatic(vec3(-5, -5, -5), vec3(1, 2, 1));
+	physicsScene->AddAABBStatic(vec3(5, -5, -5), vec3(1, 2, 1));
+
+	physicsScene->AddAABBStatic(vec3(-5, -2, 0), vec3(6, 1, 6));
+	physicsScene->AddAABBStatic(vec3(5, -2, 0), vec3(6, 1, 6));
+
+	physicsScene->AddAABBDynamic(vec3(0, 2, 0), vec3(1, 1, 1), 5, vec3(0));
+	physicsScene->AddAABBDynamic(vec3(0, 2, 3), vec3(1, 1, 1), 5, vec3(0));
+	physicsScene->AddAABBDynamic(vec3(2, 2, -1), vec3(1, 1, 1), 5, vec3(0));
+	physicsScene->AddAABBDynamic(vec3(0, 3, -1), vec3(1, 1, 1), 5, vec3(0));
+	MakeRope(5);
+}
+
 void Physics::CreateBoundary(PhysicsScene* physicsScene, float tableSize, float borderHeight)
 {
-	physicsScene->AddAABBStatic(
-		glm::vec3(0, 0.5f, (tableSize / 2) + 1),	// Position
-		glm::vec3(tableSize / 2, borderHeight, 1)	// Extents
-		);
+	physicsScene->AddAABBStatic(glm::vec3(0, 0.5f, (tableSize / 2) + 1), glm::vec3(tableSize / 2, borderHeight, 1));
 
-	physicsScene->AddAABBStatic(
-		glm::vec3(0, 0.5f, (-tableSize / 2) - 1),		// Position
-		glm::vec3(tableSize / 2, borderHeight, 1)	// Extents
-		);
+	physicsScene->AddAABBStatic(glm::vec3(0, 0.5f, (-tableSize / 2) - 1), glm::vec3(tableSize / 2, borderHeight, 1));
 
-	physicsScene->AddAABBStatic(
-		glm::vec3((tableSize / 2) + 1, 0.5f, 0),		// Position
-		glm::vec3(1, borderHeight, tableSize / 2)	// Extents
-		);
+	physicsScene->AddAABBStatic(glm::vec3((tableSize / 2) + 1, 0.5f, 0), glm::vec3(1, borderHeight, tableSize / 2));
 
-	physicsScene->AddAABBStatic(
-		glm::vec3((-tableSize / 2) - 1, 0.5f, 0),		// Position
-		glm::vec3(1, borderHeight, tableSize / 2)	// Extents
-		);
-
-
+	physicsScene->AddAABBStatic(glm::vec3((-tableSize / 2) - 1, 0.5f, 0), glm::vec3(1, borderHeight, tableSize / 2));
 }
 
 void Physics::CreateSpheres(PhysicsScene* pPhysicsScene, int sphereCount, float spacing)
@@ -143,12 +130,7 @@ void Physics::CreateSpheres(PhysicsScene* pPhysicsScene, int sphereCount, float 
 	for (int i = 0; i < sphereCount; ++i)
 	{
 		float mass = massDistribution(generator);
-		pPhysicsScene->AddSphereDynamic(
-			glm::vec3(-20 + i*spacing, 2 + i, -20 + i*spacing),		// Position
-			std::pow(mass, 0.2f),								    // Radius
-			mass,                                                   // Mass 
-			glm::vec3(randVel(), 0, randVel())					    // Vel
-			);
+		pPhysicsScene->AddSphereDynamic(glm::vec3(-20 + i*spacing, 2 + i, -20 + i*spacing),	std::pow(mass, 0.2f), mass, glm::vec3(randVel(), 0, randVel()));
 	}
 
 }
@@ -158,56 +140,25 @@ void Physics::CreateAABBs(PhysicsScene* physicsScene, int aabbCount, float spaci
 	auto randVel = std::bind(velocityDistribution, generator);
 	for (int i = 0; i < aabbCount; i++)
 	{
-		physicsScene->AddAABBDynamic(
-			glm::vec3(-20 + i*spacing, 6 + i, -20 + i*spacing),	// Position
-			glm::vec3(1, 1, 1),									// Extents
-			1, glm::vec3(randVel(), 0, randVel())					// mass,vel
-			);
+		physicsScene->AddAABBDynamic(glm::vec3(-20 + i*spacing, 6 + i, -20 + i*spacing),	glm::vec3(1, 1, 1),	1, glm::vec3(randVel(), 0, randVel()));
 	}
 
 }
 
-void Physics::DrawGrid()
+void Physics::MakeRope(int length)
 {
-	vec4 white(1);
-	vec4 black(0, 0, 0, 1);
-
-	for (int i = 0; i <= 20; ++i)
+	auto sphere = physicsScene->AddSphereStatic(vec3(0, 10, 0), 1);
+	std::shared_ptr<PhysicsObject> previousSphere;
+	previousSphere = sphere;
+	for (int i = 0; i < length; i++)
 	{
-		Gizmos::addLine(vec3(-10 + i, -0.01, -10), vec3(-10 + i, -0.01, 10),
-			i == 10 ? white : black);
-		Gizmos::addLine(vec3(-10, -0.01, -10 + i), vec3(10, -0.01, -10 + i),
-			i == 10 ? white : black);
+		vec3 newpos(previousSphere->GetPosition().x, previousSphere->GetPosition().y - 1, previousSphere->GetPosition().z);
+		auto newSphere = physicsScene->AddSphereDynamic(newpos, 0.25, 5, vec3(0, 0, 0));
+		physicsScene->AddSpring(previousSphere, newSphere, 200, 50, 0.5f);
+
+		previousSphere = newSphere;
 	}
 }
-
-void Physics::UpdateDT()
-{
-	currentTime = (float)glfwGetTime();			// Set current time.
-	deltaTime = currentTime - lastFrameTime;	// Calculate delta.
-	if (deltaTime > 0.25f) deltaTime = 0.25f;	// Lock it to prevent crazy stuff.
-	lastFrameTime = currentTime;				// Set last frame time to current. repeat.
-}
-//
-//void Physics::MakeRope(int length)
-//{
-//	std::shared_ptr<PhysicsObject> me = physicsScene->AddSphereStatic(vec3(0, 10, 1), 1);
-//
-//	auto sphere = physicsScene->AddSphereStatic(vec3(0, 10, 0), 1); // static top.
-//	std::shared_ptr<PhysicsObject> previousSphere;
-//	previousSphere = sphere;
-//
-//	for (int i = 0; i < length; i++)
-//	{
-//		vec3 newpos(previousSphere->GetPosition().x, previousSphere->GetPosition().y - 1, previousSphere->GetPosition().z);
-//		auto newSphere = physicsScene->AddSphereDynamic(newpos, 0.25, 5, vec3(0, 0, 0));
-//		physicsScene->AddSpring(previousSphere, newSphere, 200, 50, 0.5f);
-//
-//		previousSphere = newSphere;
-//	}
-//
-//	
-//}
 
 void AddWidget(PxShape* shape, PxRigidActor* actor, vec4 geo_color)
 {
