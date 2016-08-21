@@ -6,9 +6,9 @@
 class PhysicsObject
 {
 public:
-	PhysicsObject(vec3 position, Shape* shape = nullptr, RigidBody* rigidbody = nullptr) : position(position), rigidBody(rigidbody) {}
+	PhysicsObject(vec3 position, Shape* shape = nullptr, RigidBody* rigidbody = nullptr) : position(position), shape(shape), rigidBody(rigidbody) {}
 	bool HasRigidBody() { return rigidBody != nullptr; }
-	virtual void Update(vec3 gravity, float deltaTime) { if (HasRigidBody()) position += rigidBody->GetPositionDelta(); }
+	virtual void Update(vec3 gravity, float deltaTime) { if (HasRigidBody()) position += rigidBody->Update(deltaTime, gravity); }
 	virtual void Draw() { if (shape) shape->Draw(position); }
 
 	void AddPosition(vec3 positionDelta) { position += positionDelta; }
