@@ -30,7 +30,7 @@ private:
 	std::shared_ptr<PhysicsObject> AddSphere(glm::vec3 position, float radius, RigidBody* rigidBody = nullptr);
 	std::shared_ptr<PhysicsObject> AddAABB(glm::vec3 position, glm::vec3 extents, RigidBody* rigidBody = nullptr);
 
-	void AddActor(std::shared_ptr<PhysicsObject> pPhysicsObject);
+	void AddActor(std::shared_ptr<PhysicsObject> physicsObject);
 	void CheckCollisions();
 	vec3 gravity;
 	vec3 offset;
