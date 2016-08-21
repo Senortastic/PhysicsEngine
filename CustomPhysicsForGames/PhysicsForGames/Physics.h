@@ -19,7 +19,6 @@ public:
     virtual bool update();
     virtual void draw();
 	void MakeRope(int length);
-	void DrawGrid();
 	void SetupScene();
 
 	float deltaTime;
