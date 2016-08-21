@@ -161,6 +161,7 @@
     <ClInclude Include="source\PhysicsScene.h" />
     <ClInclude Include="source\RigidBody.h" />
     <ClInclude Include="source\Shapes.h" />
+    <ClInclude Include="source\SpringJoint.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="tiny_obj_loader.h" />
   </ItemGroup>
@@ -177,6 +178,7 @@
     <ClCompile Include="source\Collision.cpp" />
     <ClCompile Include="source\PhysicsScene.cpp" />
     <ClCompile Include="source\RigidBody.cpp" />
+    <ClCompile Include="source\SpringJoint.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
