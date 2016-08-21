@@ -58,7 +58,7 @@ public:
 	float GetRadius() const { return radius; }
 	void Draw(vec3 position) const override
 	{
-		Gizmos::addSphereFilled(position, radius, 10, 10, vec4(0.5f, 0, 0, 1));
+		Gizmos::addSphereFilled(position, radius, 10, 10, vec4(0.1f, 0.1f, 0.1f, 1));
 	}
 private:
 	float radius;
