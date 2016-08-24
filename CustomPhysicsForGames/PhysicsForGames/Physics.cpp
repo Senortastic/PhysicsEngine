@@ -97,19 +97,19 @@ void Physics::SetupScene()
 	physicsScene->SetGravity(glm::vec3(0.0, -9.8, 0.0f));
 	physicsScene->AddPlaneStatic(vec3(0, 1, 0), -10);
 
-	physicsScene->AddAABBStatic(vec3(5, -5, 5), vec3(1, 2, 1));
-	physicsScene->AddAABBStatic(vec3(-5, -5, 5), vec3(1, 2, 1));
-	physicsScene->AddAABBStatic(vec3(-5, -5, -5), vec3(1, 2, 1));
-	physicsScene->AddAABBStatic(vec3(5, -5, -5), vec3(1, 2, 1));
+	physicsScene->AddAABBStatic(vec3(10, -2, 5), vec3(0.5f, 2, 0.5f));
+	physicsScene->AddAABBStatic(vec3(-10, -2, 5), vec3(0.5f, 2, 0.5f));
+	physicsScene->AddAABBStatic(vec3(-10, -2, -5), vec3(0.5f, 2, 0.5f));
+	physicsScene->AddAABBStatic(vec3(10, -2, -5), vec3(0.5f, 2, 0.5f));
 
-	physicsScene->AddAABBStatic(vec3(-5, -2, 0), vec3(6, 1, 6));
-	physicsScene->AddAABBStatic(vec3(5, -2, 0), vec3(6, 1, 6));
+	physicsScene->AddAABBStatic(vec3(-5, 0, 0), vec3(6, 0.5f, 6));
+	physicsScene->AddAABBStatic(vec3(5, 0, 0), vec3(6, 0.5f, 6));
 
 	physicsScene->AddAABBDynamic(vec3(0, 2, 0), vec3(1, 1, 1), 5, vec3(0));
 	physicsScene->AddAABBDynamic(vec3(0, 2, 3), vec3(1, 1, 1), 5, vec3(0));
 	physicsScene->AddAABBDynamic(vec3(2, 2, -1), vec3(1, 1, 1), 5, vec3(0));
 	physicsScene->AddAABBDynamic(vec3(0, 3, -1), vec3(1, 1, 1), 5, vec3(0));
-	MakeRope(5);
+	MakeRope(7);
 }
 
 void Physics::CreateBoundary(PhysicsScene* physicsScene, float tableSize, float borderHeight)
@@ -147,7 +147,7 @@ void Physics::CreateAABBs(PhysicsScene* physicsScene, int aabbCount, float spaci
 
 void Physics::MakeRope(int length)
 {
-	auto sphere = physicsScene->AddSphereStatic(vec3(0, 10, 0), 1);
+	auto sphere = physicsScene->AddSphereStatic(vec3(0, 15, 0), 1);
 	std::shared_ptr<PhysicsObject> previousSphere;
 	previousSphere = sphere;
 	for (int i = 0; i < length; i++)

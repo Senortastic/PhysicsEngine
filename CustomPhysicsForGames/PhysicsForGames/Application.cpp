@@ -66,7 +66,7 @@ void Application::shutdown()
 
 bool Application::update() 
 { 
-	if ( glfwWindowShouldClose(m_window) )
+	if ( glfwWindowShouldClose(m_window) || glfwGetKey(m_window, GLFW_KEY_ESCAPE))
 	{
 		return false;
 	}

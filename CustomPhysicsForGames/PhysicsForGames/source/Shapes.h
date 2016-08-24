@@ -30,7 +30,7 @@ public:
 	vec3 GetSize() const { return size; }
 	void Draw(vec3 position) const override
 	{
-		Gizmos::addAABBFilled(position, size, vec4(0.5, 0, 0.5, 1));
+		Gizmos::addAABBFilled(position, size, vec4(0.5, 0.3, 0.5, 1));
 	}
 private:
 	vec3 size;
@@ -44,7 +44,7 @@ public:
 	float GetDistance() const { return offset; }
 	void Draw(vec3 position) const override
 	{
-		Gizmos::addAABBFilled(vec3(0, offset, 0), vec3(100.f, 0.01f, 100.f), vec4(0.25f, 0.25f, 0.25f, 1));
+		Gizmos::addAABBFilled(vec3(0, offset, 0), vec3(100.f, 0.01f, 100.f), vec4(0.7, 0.7, 0.7f, 1));
 	}
 private:
 	vec3 normal;

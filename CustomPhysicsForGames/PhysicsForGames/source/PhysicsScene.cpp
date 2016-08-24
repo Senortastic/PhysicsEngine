@@ -28,32 +28,32 @@ void PhysicsScene::Draw()
 	}
 }
 
-std::shared_ptr<PhysicsObject> PhysicsScene::AddPlaneStatic(glm::vec3 normal, float distance)
+std::shared_ptr<PhysicsObject> PhysicsScene::AddPlaneStatic(vec3 normal, float distance)
 {
 	return AddPlane(normal, distance);
 }
 
-std::shared_ptr<PhysicsObject> PhysicsScene::AddSphereStatic(glm::vec3 position, float radius)
+std::shared_ptr<PhysicsObject> PhysicsScene::AddSphereStatic(vec3 position, float radius)
 {
 	return AddSphere(position, radius);
 }
 
-std::shared_ptr<PhysicsObject> PhysicsScene::AddAABBStatic(glm::vec3 position, glm::vec3 extents)
+std::shared_ptr<PhysicsObject> PhysicsScene::AddAABBStatic(vec3 position, vec3 extents)
 {
 	return AddAABB(position, extents);
 }
 
-std::shared_ptr<PhysicsObject> PhysicsScene::AddPlaneDynamic(glm::vec3 normal, float distance, float mass, glm::vec3 velocity)
+std::shared_ptr<PhysicsObject> PhysicsScene::AddPlaneDynamic(vec3 normal, float distance, float mass, vec3 velocity)
 {
 	return AddPlane(normal, distance, new RigidBody(mass, velocity));
 }
 
-std::shared_ptr<PhysicsObject> PhysicsScene::AddSphereDynamic(glm::vec3 position, float radius, float mass, glm::vec3 velocity)
+std::shared_ptr<PhysicsObject> PhysicsScene::AddSphereDynamic(vec3 position, float radius, float mass, vec3 velocity)
 {
 	return AddSphere(position, radius, new RigidBody(mass, velocity));
 }
 
-std::shared_ptr<PhysicsObject> PhysicsScene::AddAABBDynamic(glm::vec3 position, glm::vec3 extents, float mass, glm::vec3 velocity)
+std::shared_ptr<PhysicsObject> PhysicsScene::AddAABBDynamic(vec3 position, vec3 extents, float mass, vec3 velocity)
 {
 	return AddAABB(position, extents, new RigidBody(mass, velocity));
 }
@@ -65,21 +65,21 @@ std::shared_ptr<PhysicsObject> PhysicsScene::AddSpring(std::shared_ptr<PhysicsOb
 	return pSpring;
 }
 
-std::shared_ptr<PhysicsObject> PhysicsScene::AddPlane(glm::vec3 normal, float distance, RigidBody* pRigidBody)
+std::shared_ptr<PhysicsObject> PhysicsScene::AddPlane(vec3 normal, float distance, RigidBody* pRigidBody)
 {
 	auto pPlane = std::make_shared<PhysicsObject>(glm::vec3(0), new Plane(normal, distance), pRigidBody);
 	AddActor(pPlane);
 	return pPlane;
 }
 
-std::shared_ptr<PhysicsObject> PhysicsScene::AddSphere(glm::vec3 position, float radius, RigidBody* pRigidBody)
+std::shared_ptr<PhysicsObject> PhysicsScene::AddSphere(vec3 position, float radius, RigidBody* pRigidBody)
 {
 	auto pSphere = std::make_shared<PhysicsObject>(position, new Sphere(radius), pRigidBody);
 	AddActor(pSphere);
 	return pSphere;
 }
 
-std::shared_ptr<PhysicsObject> PhysicsScene::AddAABB(glm::vec3 position, glm::vec3 extents, RigidBody* pRigidBody)
+std::shared_ptr<PhysicsObject> PhysicsScene::AddAABB(vec3 position, vec3 extents, RigidBody* pRigidBody)
 {
 	auto pBox = std::make_shared<PhysicsObject>(position, new AABB(extents), pRigidBody);
 	AddActor(pBox);
