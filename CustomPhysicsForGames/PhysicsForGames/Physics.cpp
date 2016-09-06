@@ -109,7 +109,7 @@ void Physics::SetupScene()
 	physicsScene->AddAABBDynamic(vec3(0, 2, 3), vec3(1, 1, 1), 5, vec3(0));
 	physicsScene->AddAABBDynamic(vec3(2, 2, -1), vec3(1, 1, 1), 5, vec3(0));
 	physicsScene->AddAABBDynamic(vec3(0, 3, -1), vec3(1, 1, 1), 5, vec3(0));
-	MakeRope(7);
+	CreateRope(7);
 }
 
 void Physics::CreateBoundary(PhysicsScene* physicsScene, float tableSize, float borderHeight)
@@ -145,7 +145,7 @@ void Physics::CreateAABBs(PhysicsScene* physicsScene, int aabbCount, float spaci
 
 }
 
-void Physics::MakeRope(int length)
+void Physics::CreateRope(int length)
 {
 	auto sphere = physicsScene->AddSphereStatic(vec3(0, 15, 0), 1);
 	std::shared_ptr<PhysicsObject> previousSphere;
